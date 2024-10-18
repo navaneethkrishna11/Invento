@@ -47,18 +47,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="/dashboard/athul/invento/assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="/dashboard/athul/invento/assets/img/favicon.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
   <title>Invento</title>
 
   <!-- Fonts and icons -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-  <link href="/dashboard/athul/invento/assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="/dashboard/athul/invento/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
 
   <!-- Main CSS -->
-  <link href="/dashboard/athul/invento/assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
+  <link href="../assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
 </head>
 
 <body class="">
@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <?php echo htmlspecialchars($error); ?>
                 </div>
                 <?php } ?>
-                <form role="form" method="post" action="<?php echo htmlspecialchars($_SERVER[" PHP_SELF"]); ?>">
+                <form role="form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                   <label>Email</label>
                   <div class="mb-3">
                     <input type="email" name="email" class="form-control" placeholder="Email" aria-label="Email"
@@ -101,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <div class="card-footer text-center pt-0 px-lg-2 px-1">
                 <p class="mb-4 text-sm mx-auto">
                   Don't have an account?
-                  <a href="/dashboard/athul/invento/pages/sign-up.php"
+                  <a href="/pages/sign-up.html"
                     class="text-info text-gradient font-weight-bold">Sign up</a>
                 </p>
               </div>
@@ -110,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <div class="col-md-6">
             <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
               <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6"
-                style="background-image:url('/dashboard/athul/invento/assets/img/curved-images/curved6.jpg')">
+                style="background-image:url('../assets/img/curved-images/curved6.jpg')">
               </div>
             </div>
           </div>
@@ -120,8 +120,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </section>
 
   <!-- Core JS Files -->
-  <script src="/dashboard/athul/invento/assets/js/core/popper.min.js"></script>
-  <script src="/dashboard/athul/invento/assets/js/core/bootstrap.min.js"></script>
+  <script src="../assets/js/core/popper.min.js"></script>
+  <script src="../assets/js/core/bootstrap.min.js"></script>
 </body>
 
 </html>
