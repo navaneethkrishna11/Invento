@@ -2,12 +2,9 @@
 session_start();
 $error = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $conn = new mysqli('localhost', 'root', '', 'inventory_db');
-    
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+if ($_SERVER["REQUEST_METHOD"] == "POST") { 
+
+    include "../config/config.php";
     
     $username = $conn->real_escape_string($_POST['email']);
     $password = $_POST['password'];
@@ -89,10 +86,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input type="password" name="password" class="form-control" placeholder="Password"
                       aria-label="Password" aria-describedby="password-addon" required>
                   </div>
-                  <div class="form-check form-switch">
+                  <!-- <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
                     <label class="form-check-label" for="rememberMe">Remember me</label>
-                  </div>
+                  </div> -->
                   <div class="text-center">
                     <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Sign in</button>
                   </div>
