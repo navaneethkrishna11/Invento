@@ -17,7 +17,7 @@
     "url": "git+https://github.com/creativetimofficial/soft-ui-dashboard.git"
   },
   "keywords": [
-    "soft ui dashboard",
+    "invento dashboard",
     "bootstrap 5",
     "dashboard",
     "creative tim",
@@ -45,6 +45,5 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-open": "^3.0.1",
     "sass": "^1.49.9"
-  },
-  "homepage": "http://creative-tim.com/product/soft-ui-dashboard"
+  }
 }

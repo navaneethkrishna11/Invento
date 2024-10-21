@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['username'] = $user['username'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
-            header("location: welcome.php");
+            header("location: dashboard.php");
             exit();
         } else {
             $error = "Invalid email or password";

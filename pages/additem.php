@@ -2,7 +2,29 @@
 session_start();
 $error = "";
 include "../config/config.php";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $item_id = $_POST['item_id'];
+    $item_name = $_POST['item_name'];
+    $item_price = $_POST['item_price'];
+    $item_quantity = $_POST['item_quantity'];
+    $item_exp = $_POST['item_exp'];
+    $item_category = $_POST['item_category'];
 
+    if ($conn)
+    {
+        $sql = "INSERT INTO product (item_id,item_name,item_price,item_quantity,item_exp,item_category) VALUES ('$item_id', '$item_name','$item_price','$item_quantity','$item_exp','$item_category')";
+        
+        if (mysqli_query($conn, $sql)) {
+            $message = "Product added successfully!";
+        } else {
+            $error = "Error: " . mysqli_error($conn);
+        }
+    } else {
+        $error = "Database not connected.";
+    
+    }
+    $conn->close();
+}
 ?>
 
 
@@ -13,7 +35,7 @@ include "../config/config.php";
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/invento.png">
+  <link rel="icon" type="image/png" href="../assets/img/Invento.png">
   <title>
     Invento
   </title>
@@ -35,7 +57,7 @@ include "../config/config.php";
 <body class="g-sidenav-show  bg-gray-100">
 
   <?php
- include 'sidebar.html'
+ include 'sidebar.html';
   ?>
  
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
@@ -163,7 +185,7 @@ include "../config/config.php";
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <a href="" class="text-sm mb-0 text-capitalize font-weight-bold">View Table</a>
+                    <a href="/dashboard/Invento/pages/tables.php" class="text-sm mb-0 text-capitalize font-weight-bold">View Table</a>
                   </div>
                 </div>
                 <div class="col-4 text-end">
@@ -246,58 +268,72 @@ include "../config/config.php";
 
 
 
+<!---------------------------------------------------FORM TO ADD NEW ITEM IS SHOWN BELOW --------------------------------------------------------------------------------------->
 
 
-
-    <div class="container-fluid py-4">
-      <div class="row">
-        <div class="col-12">
-          <div class="card mb-4">
-            <div class="card-header pb-0">
-              <h6>Item table</h6>
+<div class="container-fluid py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card mb-4 shadow">
+                    <div class="card-header bg-primary text-white">
+                        <center>
+                        <h4 class="mb-0 ">ADD NEW ITEM</h4>
+                        </center>
+                    </div>
+                    <div class="card-body">
+                    <?php if ($error): ?>
+                         <div class="alert alert-danger"><?php echo $error; ?></div>
+                     <?php endif; ?>
+                    <?php if (!empty($message)): ?>
+                         <div class="alert alert-success"><?php echo $message; ?></div>
+                    <?php endif; ?>
+                        <form id="itemForm" method='post'>
+                          
+                            <div class="mb-3">
+                                <label for="item_category" class="form-label">Item Category:</label>
+                                <select class="form-select" id="item_category" name="item_category" required>
+                                    <option value="">Choose a category</option>
+                                    <option value="electronics">Electronics</option>
+                                    <option value="clothing">Clothing</option>
+                                    <option value="books">Books</option>
+                                    <option value="home">Home & Garden</option>
+                                </select>
+                            </div>
+                           
+                            <div class="mb-3">
+                                <label for="item_id" class="form-label">Item ID:</label>
+                                <input type="text" class="form-control" id="item_id" name="item_id" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="item_name" class="form-label">Item Name:</label>
+                                <input type="text" class="form-control" id="item_name" name="item_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="item_price" class="form-label">Item Price:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" id="item_price" name="item_price" step="0.01" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="item_quantity" class="form-label">Item Quantity:</label>
+                                <input type="number" class="form-control" id="item_quantity" name="item_quantity" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="item_exp" class="form-label">Item Date:</label>
+                                <input type="date" class="form-control" id="item_exp" name="item_exp" required>
+                            </div>
+                           
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="card-body px-0 pt-0 pb-2">
-              <div class="table-responsive p-0">
-                   <?php
-                   include "../config/config.php";
-                    if($conn->connect_error)
-                    {
-                      die("connection failed".$conn->connect_error);
-                    }else{
-
-                      $sql = "SELECT * FROM product";
-                      $res =  $conn->query($sql);
-                      if($res->num_rows >0)
-                      {
-                       echo "<table class='table align-items-center mb-0'><tr><th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Id</th> <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Item</th>
-                      <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2'>Price</th><th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Status</th>
-                      <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Expiry date</th><th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Category</th>
-                      <th class='text-secondary opacity-7'></th></tr>";
-                      
-
-                      while($row= $res->fetch_assoc())
-                      {
-
-                       echo "<tr><td><div class='d-flex px-2 py-1'> <div class='d-flex flex-column justify-content-center'> <h6 class='mb-0 text-sm'>".$row["item_id"]."</h6></div></div></td>
-                         <td><div class='d-flex px-2 py-1'><div>   <img src='../assets/img/team-2.jpg' class='avatar avatar-sm me-3' alt='user1'>    </div> <div class='d-flex flex-column justify-content-center'><h6 class='mb-0 text-sm'>".$row["item_name"]."</h6></div></div></td>
-                          <td><p class='text-xs font-weight-bold mb-0'>".$row["item_price"]."</p></td><td class='align-middle text-center text-sm'><span class='badge badge-sm bg-gradient-success'>".$row["item_quantity"]."</span></td>                         
-                          <td class='align-middle text-center'>
-                        <span class='text-secondary text-xs font-weight-bold'>".$row["item_exp"]."</span></td><td class='align-middle text-center'> <span class='text-secondary text-xs font-weight-bold'>".$row["item_category"]."</span></td></tr>";
-                       }
-                      echo"</table>";
-                    }
-                    $conn->close();
-                    }
-                   ?>
-                     
-            
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-
-
+</div>
 
 
 
