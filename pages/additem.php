@@ -228,8 +228,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Delete Item</p>
-                  </div>
+                  <a href="delete.php" class="text-sm mb-0 text-capitalize font-weight-bold">Delete Item</a>                  </div>
                 </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
@@ -249,7 +248,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <p class="text-sm mb-0 text-capitalize font-weight-bold">Update Item</p>
+                  <a href="update.php?id=.$row['item_id']" class="text-sm mb-0 text-capitalize font-weight-bold">Update Item</a> 
                    
                   </div>
                 </div>
