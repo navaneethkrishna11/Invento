@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();
 $error = "";
 include "../config/config.php";
 
@@ -163,7 +164,7 @@ include "../config/config.php";
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <a href="" class="text-sm mb-0 text-capitalize font-weight-bold">View Table</a>
+                    <a href="tables.php" class="text-sm mb-0 text-capitalize font-weight-bold">View Table</a>
                   </div>
                 </div>
                 <div class="col-4 text-end">
@@ -227,9 +228,7 @@ include "../config/config.php";
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    
-                    
-                  <a href="update.php?id=.$row['item_id']" class="text-sm mb-0 text-capitalize font-weight-bold">Update Item</a> 
+                    <a href="" class="text-sm mb-0 text-capitalize font-weight-bold">Update Item </a>
                    
                   </div>
                 </div>
@@ -244,13 +243,6 @@ include "../config/config.php";
         </div>
       </div>
 
-
-
-
-
-
-
-
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12">
@@ -260,11 +252,14 @@ include "../config/config.php";
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
-              <?php
+<?php
 include "../config/config.php";
-if($conn->connect_error) {
-    die("connection failed: ".$conn->connect_error);
-} else {
+
+if ($conn->connect_error) {
+    die("Connection failed: " .$conn->connect_error);
+}
+else{
+
     $sql = "SELECT * FROM product";
     $res =  $conn->query($sql);
     if($res->num_rows > 0) {
@@ -276,6 +271,8 @@ if($conn->connect_error) {
                     <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Status</th>
                     <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Expiry date</th>
                     <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Category</th>
+                    <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Update</th>
+
                     <th class='text-secondary opacity-7'></th>
                 </tr>";
 
@@ -308,16 +305,130 @@ if($conn->connect_error) {
                     <td class='align-middle text-center'>
                         <span class='text-secondary text-xs font-weight-bold'>".$row["item_category"]."</span>
                     </td>
-                   
+                    <td class='align-middle text-center'>
+                        <a href='update.php?id=".$row['item_id']."' class='text-sm mb-0 text-capitalize font-weight-bold'>Edit</a>
+                    </td>
                 </tr>";
         }
         echo "</table>";
     } else {
         echo "No records found.";
     }
-    $conn->close();
+    
+
+}
+
+
+// Check if ID is provided in URL
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    
+    // Fetch the existing item details
+    $sql = "SELECT * FROM product WHERE item_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $item = $result->fetch_assoc();
+    $stmt->close();
+
+    // Update the item when the form is submitted
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $item_name = $_POST['item_name'];
+        $item_price = $_POST['item_price'];
+        $item_quantity = $_POST['item_quantity'];
+        $item_exp = $_POST['item_exp'];
+        $item_category = $_POST['item_category'];
+        
+        // Update the item in the database
+        $update_sql = "UPDATE product SET item_name = ?, item_price = ?, item_quantity = ?, item_exp = ?, item_category = ? WHERE item_id = ?";
+        $update_stmt = $conn->prepare($update_sql);
+        $update_stmt->bind_param("sdissi", $item_name, $item_price, $item_quantity, $item_exp, $item_category, $id);
+        $update_stmt->execute();
+        $update_stmt->close();
+
+        
+        header("Location:tables.php"); // Redirect to the main table page
+        exit();
+    }
+} else {
+    echo "No item ID provided.";
+    exit();
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Item</title>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">Update Item</h2>
+        <form method="POST" action="" class="border p-4 rounded">
+            <div class="mb-3">
+                <label for="item_name" class="form-label">Item Name:</label>
+                <input type="text" class="form-control" id="item_name" name="item_name" value="<?php echo htmlspecialchars($item['item_name']); ?>" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="item_price" class="form-label">Price:</label>
+                <input type="number" class="form-control" id="item_price" name="item_price" value="<?php echo htmlspecialchars($item['item_price']); ?>" step="0.01" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="item_quantity" class="form-label">Quantity:</label>
+                <input type="number" class="form-control" id="item_quantity" name="item_quantity" value="<?php echo htmlspecialchars($item['item_quantity']); ?>" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="item_exp" class="form-label">Expiry Date:</label>
+                <input type="date" class="form-control" id="item_exp" name="item_exp" value="<?php echo htmlspecialchars($item['item_exp']); ?>" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="item_category" class="form-label">Category:</label>
+                <input type="text" class="form-control" id="item_category" name="item_category" value="<?php echo htmlspecialchars($item['item_category']); ?>" required>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
+
+
+<!-- Modal for Delete Confirmation -->
+<div id="deleteModal" class="modal" style="display:none; position:fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000;">
+    <div style="position: relative; margin: 15% auto; padding: 20px; background-color: white; width: 300px; border-radius: 5px; text-align: center;">
+        <h5>Are you sure you want to delete this record?</h5>
+        <button id="confirmDelete" style="margin: 10px; padding: 5px 10px; background-color: red; color: white; border: none; border-radius: 3px;">Yes</button>
+        <button onclick="closeModal()" style="margin: 10px; padding: 5px 10px; background-color: gray; color: white; border: none; border-radius: 3px;">No</button>
+    </div>
+</div>
+
+<script>
+    let itemIdToDelete;
+
+    function openModal(itemId) {
+        itemIdToDelete = itemId; // Store the item ID to delete
+        document.getElementById('deleteModal').style.display = 'block'; // Show the modal
+    }
+
+    function closeModal() {
+        document.getElementById('deleteModal').style.display = 'none'; // Hide the modal
+    }
+
+    document.getElementById('confirmDelete').addEventListener('click', function() {
+        window.location.href = 'delete.php?id=' + itemIdToDelete; // Redirect to delete with item ID
+    });
+</script>
+
+
 
                      
             
