@@ -1,6 +1,8 @@
 <?php
+
     $conn = new mysqli('localhost', 'root', '', 'test');
-    //$conn = new mysqli('localhost', 'root', '', 'inventory_db');
+  
+
 
     
     if ($conn->connect_error) {
