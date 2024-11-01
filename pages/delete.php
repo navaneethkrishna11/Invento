@@ -163,7 +163,7 @@ include "../config/config.php";
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <a href="" class="text-sm mb-0 text-capitalize font-weight-bold">View Table</a>
+                    <a href="tables.php" class="text-sm mb-0 text-capitalize font-weight-bold">View Table</a>
                   </div>
                 </div>
                 <div class="col-4 text-end">
@@ -227,8 +227,6 @@ include "../config/config.php";
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    
-                    
                   <a href="update.php?id=.$row['item_id']" class="text-sm mb-0 text-capitalize font-weight-bold">Update Item</a> 
                    
                   </div>
@@ -244,13 +242,6 @@ include "../config/config.php";
         </div>
       </div>
 
-
-
-
-
-
-
-
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12">
@@ -262,62 +253,115 @@ include "../config/config.php";
               <div class="table-responsive p-0">
               <?php
 include "../config/config.php";
-if($conn->connect_error) {
-    die("connection failed: ".$conn->connect_error);
-} else {
-    $sql = "SELECT * FROM product";
-    $res =  $conn->query($sql);
-    if($res->num_rows > 0) {
-        echo "<table class='table align-items-center mb-0'>
-                <tr>
-                    <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Id</th>
-                    <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Item</th>
-                    <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2'>Price</th>
-                    <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Status</th>
-                    <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Expiry date</th>
-                    <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Category</th>
-                    <th class='text-secondary opacity-7'></th>
-                </tr>";
 
-        while($row = $res->fetch_assoc()) {
-            echo "<tr>
-                    <td>
-                        <div class='d-flex px-2 py-1'>
-                            <div class='d-flex flex-column justify-content-center'>
-                                <h6 class='mb-0 text-sm'>".$row["item_id"]."</h6>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class='d-flex px-2 py-1'>
-                            <div>
-                                <img src='../assets/img/team-2.jpg' class='avatar avatar-sm me-3' alt='user1'>
-                            </div>
-                            <div class='d-flex flex-column justify-content-center'>
-                                <h6 class='mb-0 text-sm'>".$row["item_name"]."</h6>
-                            </div>
-                        </div>
-                    </td>
-                    <td><p class='text-xs font-weight-bold mb-0'>".$row["item_price"]."</p></td>
-                    <td class='align-middle text-center text-sm'>
-                        <span class='badge badge-sm bg-gradient-success'>".$row["item_quantity"]."</span>
-                    </td>
-                    <td class='align-middle text-center'>
-                        <span class='text-secondary text-xs font-weight-bold'>".$row["item_exp"]."</span>
-                    </td>
-                    <td class='align-middle text-center'>
-                        <span class='text-secondary text-xs font-weight-bold'>".$row["item_category"]."</span>
-                    </td>
-                   
-                </tr>";
-        }
-        echo "</table>";
-    } else {
-        echo "No records found.";
-    }
-    $conn->close();
+// Check for database connection error
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+
+// Check for expired items and delete them
+$currentDate = date('Y-m-d'); // Get the current date
+
+// Prepare and execute DELETE query for expired items
+$deleteExpiredSql = "DELETE FROM product WHERE item_exp < ?";
+$deleteExpiredStmt = $conn->prepare($deleteExpiredSql);
+$deleteExpiredStmt->bind_param("s", $currentDate);
+$deleteExpiredStmt->execute();
+$deleteExpiredStmt->close(); // Close the statement
+
+// Initialize message variable
+$message = "";
+
+// Check if an ID is provided in the GET request for a specific delete action
+if (isset($_GET['id'])) {
+    $id = $_GET['id']; // Get the item_id to delete
+
+    // Prepare and execute DELETE query for specific item
+    $sql = "DELETE FROM product WHERE item_id=?";
+    $delete_stmt = $conn->prepare($sql);
+    $delete_stmt->bind_param("i", $id);
+    $delete_stmt->execute();
+
+    // Optional: Check if the delete was successful
+    if ($delete_stmt->affected_rows > 0) {
+        $message = "Record deleted successfully."; // Set success message
+    } else {
+        $message = "Error deleting record."; // Set error message
+    }
+}
+
+// Prepare and execute SELECT query to fetch all remaining records
+$sql = "SELECT * FROM product";
+$result = $conn->query($sql);
+
+// Check if there are records to display
+if ($result->num_rows > 0) {
+    echo "<table class='table align-items-center mb-0'>
+            <tr>
+                <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Id</th>
+                <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Item</th>
+                <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2'>Price</th>
+                <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Status</th>
+                <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Expiry date</th>
+                <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Category</th>
+                <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Delete</th>
+            </tr>";
+
+    // Fetch and display each row
+    while ($row = $result->fetch_assoc()) {
+        echo "<tr>
+                <td><div class='d-flex px-2 py-1'><div class='d-flex flex-column justify-content-center'><h6 class='mb-0 text-sm'>" . $row["item_id"] . "</h6></div></div></td>
+                <td><div class='d-flex px-2 py-1'><div><img src='../assets/img/team-2.jpg' class='avatar avatar-sm me-3' alt='user1'></div><div class='d-flex flex-column justify-content-center'><h6 class='mb-0 text-sm'>" . $row["item_name"] . "</h6></div></div></td>
+                <td><p class='text-xs font-weight-bold mb-0'>" . $row["item_price"] . "</p></td>
+                <td class='align-middle text-center text-sm'><span class='badge badge-sm bg-gradient-success'>" . $row["item_quantity"] . "</span></td>
+                <td class='align-middle text-center'><span class='text-secondary text-xs font-weight-bold'>" . $row["item_exp"] . "</span></td>
+                <td class='align-middle text-center'><span class='text-secondary text-xs font-weight-bold'>" . $row["item_category"] . "</span></td>
+                <td class='align-middle text-center'>
+                    <a href='#' class='text-secondary text-xs font-weight-bold' style='color: red;' onclick=\"openModal(" . $row['item_id'] . ")\">Remove</a>
+                </td>
+              </tr>";
+    }
+    echo "</table>";
+} else {
+    echo "No records found.";
+}
+
+// Display the deletion message outside the table and center it
+if ($message) {
+    echo "<div style='text-align: center; color: green;'>$message</div>"; // Center the message
+}
+
+// Close the database connection
+$conn->close();
 ?>
+
+<!-- Modal for Delete Confirmation -->
+<div id="deleteModal" class="modal" style="display:none; position:fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000;">
+    <div style="position: relative; margin: 15% auto; padding: 20px; background-color: white; width: 300px; border-radius: 5px; text-align: center;">
+        <h5>Are you sure you want to delete this record?</h5>
+        <button id="confirmDelete" style="margin: 10px; padding: 5px 10px; background-color: red; color: white; border: none; border-radius: 3px;">Yes</button>
+        <button onclick="closeModal()" style="margin: 10px; padding: 5px 10px; background-color: gray; color: white; border: none; border-radius: 3px;">No</button>
+    </div>
+</div>
+
+<script>
+    let itemIdToDelete;
+
+    function openModal(itemId) {
+        itemIdToDelete = itemId; // Store the item ID to delete
+        document.getElementById('deleteModal').style.display = 'block'; // Show the modal
+    }
+
+    function closeModal() {
+        document.getElementById('deleteModal').style.display = 'none'; // Hide the modal
+    }
+
+    document.getElementById('confirmDelete').addEventListener('click', function() {
+        window.location.href = 'delete.php?id=' + itemIdToDelete; // Redirect to delete with item ID
+    });
+</script>
+
+
 
                      
             
