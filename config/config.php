@@ -1,5 +1,5 @@
 <?php
-    $conn = new mysqli('p:sql.freedb.tech', 'freedb_athul', '4KKACx@fBv$epf*', 'freedb_inventory_db');
+    $conn = new mysqli('localhost', 'Users', '', 'test');
     //$conn = new mysqli('localhost', 'root', '', 'inventory_db');
 
     
