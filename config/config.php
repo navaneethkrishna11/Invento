@@ -1,5 +1,5 @@
 <?php
-    $conn = new mysqli('localhost', 'root', '', 'inventory_db');
+    $conn = new mysqli('localhost', 'root', '', 'test');
     //$conn = new mysqli('localhost', 'root', '', 'inventory_db');
 
     
