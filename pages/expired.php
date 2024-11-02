@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expired Products Dashboard</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Original CSS imports -->
     <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
@@ -90,10 +91,10 @@
                                     <option selected value="choose">Choose a Category</option>
                                     <?php
                                     if ($conn) {
-                                        $sql = "SELECT DISTINCT item_category FROM product";
+                                        $sql = "SELECT DISTINCT category_name FROM categories";
                                         $res = mysqli_query($conn, $sql);
                                         while($row = mysqli_fetch_assoc($res)) {
-                                            echo "<option value='".$row["item_category"]."'>".$row["item_category"]."</option>";
+                                            echo "<option value='".$row["category_name"]."'>".$row["category_name"]."</option>";
                                         }
                                     }
                                     ?>

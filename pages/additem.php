@@ -369,7 +369,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                             
                             <div class="mb-3">
-                                <label for="item_exp" class="form-label">Item Date:</label>
+                                <label for="item_exp" class="form-label">Expiry Date:</label>
                                 <input type="date" class="form-control" id="item_exp" name="item_exp" >
                             </div>
 
