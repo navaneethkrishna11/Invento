@@ -1,6 +1,8 @@
 <?php
-    $conn = new mysqli('localhost', 'root', '', 'inventory_db');
-    //$conn = new mysqli('sql.freedb.tech', 'freedb_athul', '4KKACx@fBv$epf*', 'freedb_inventory_db');
+
+    $conn = new mysqli('localhost', 'root', '', 'test');
+  
+
 
     
     if ($conn->connect_error) {
