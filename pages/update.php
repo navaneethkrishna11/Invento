@@ -220,7 +220,11 @@ if ($conn->connect_error) {
 }
 else{
 
-    $sql = "SELECT * FROM product";
+  $sql = "SELECT i.*, c.category_name 
+  FROM product i 
+  LEFT JOIN categories c ON i.item_id = c.id";
+   
+
     $res =  $conn->query($sql);
     if($res->num_rows > 0) {
         echo "<table class='table align-items-center mb-0'>
@@ -255,21 +259,23 @@ else{
                             </div>
                         </div>
                     </td>
-                    <td><p class='text-xs font-weight-bold mb-0'>".$row["item_price"]."</p></td>
-                    <td class='align-middle text-center text-sm'>
-                        <span class='badge badge-sm bg-gradient-success'>".$row["item_quantity"]."</span>
-                    </td>
-                    <td class='align-middle text-center'>
-                        <span class='text-secondary text-xs font-weight-bold'>".$row["item_exp"]."</span>
-                    </td>
-                    <td class='align-middle text-center'>
-                        <span class='text-secondary text-xs font-weight-bold'>".$row["item_category"]."</span>
-                    </td>
-                    <td class='align-middle text-center'>
-                        <a href='update.php?id=".$row['item_id']."' class='text-sm mb-0 text-capitalize font-weight-bold'>Edit</a>
-                    </td>
-                </tr>";
-        }
+                      <td><p class='text-xs font-weight-bold mb-0'>".$row["item_price"]."</p></td>
+                      <td class='align-middle text-center text-sm'>
+                          <span class='badge badge-sm bg-gradient-success'>".$row["item_quantity"]."</span>
+                      </td>
+                      <td class='align-middle text-center'>
+                          <span class='text-secondary text-xs font-weight-bold'>".$row["item_exp"]."</span>
+                      </td>
+                      {?php
+                      <td class='align-middle text-center'>
+                          <span class='text-secondary text-xs font-weight-bold'>".$row["category_name"]."</span>
+                      </td>
+                      ?>
+                      <td class='align-middle text-center'>
+                          <a href='update.php?id=".$row['item_id']."' class='text-sm mb-0 text-capitalize font-weight-bold'>Edit</a>
+                      </td>
+                  </tr>";
+          }
         echo "</table>";
     } else {
         echo "No records found.";

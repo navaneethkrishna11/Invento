@@ -4,65 +4,19 @@ $error = "";
 include "../config/config.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $item_id = $_POST['item_id'];
-    $item_name = $_POST['item_name'];
-    $item_price = $_POST['item_price'];
-    $item_quantity = $_POST['item_quantity'];
-    $item_exp = $_POST['item_exp'];
-    $item_category = $_POST['item_category'];
-
-    error_log("Processing form submission");
-    error_log("Files array: " . print_r($_FILES, true));
-    
-    // Image handling
-    if (isset($_FILES['item_image']) && $_FILES['item_image']['error'] === UPLOAD_ERR_OK) {
-        $file = $_FILES['item_image'];
-        
-        // File properties
-        $file_name = $file['name'];
-        $file_tmp = $file['tmp_name'];
-        $file_size = $file['size'];
-        
-        // Get file extension
-        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-        
-        // Allowed file types
-        $allowed = array('jpg', 'jpeg', 'png', 'gif');
-        
-        if (in_array($file_ext, $allowed)) {
-            // Check file size (5MB maximum)
-            if ($file_size <= 5242880) { // 5MB in bytes
-                // Create unique file name
-                $file_name_new = $item_id . '_' . uniqid('', true) . '.' . $file_ext;
-                
-                // Upload directory - make sure this directory exists and is writable
-                $upload_dir = '../uploads/products/';
-                if (!file_exists($upload_dir)) {
-                    mkdir($upload_dir, 0777, true);
-                }
-                
-                $file_destination = $upload_dir . $file_name_new;
-                
-                // Move uploaded file
-                if (move_uploaded_file($file_tmp, $file_destination)) {
+    $id = $_POST['id'];
+    $category_name = $_POST['category_name'];
+   
                     if ($conn) {
-                        // SQL with image field
-                        $sql = "INSERT INTO product (
-                            item_id, 
-                            item_name, 
-                            item_price, 
-                            item_quantity, 
-                            item_exp, 
-                            item_category, 
-                            item_image
+                       
+                        $sql = "INSERT INTO categories (
+                            id, 
+                            category_name
+                            
                         ) VALUES (
-                            '$item_id', 
-                            '$item_name', 
-                            '$item_price', 
-                            '$item_quantity', 
-                            '$item_exp', 
-                            '$item_category', 
-                            '$file_name_new'
+                            '$id', 
+                            '$category_name'
+                           
                         )";
                         
                         if (mysqli_query($conn, $sql)) {
@@ -71,32 +25,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         } else {
                             $error = "Error: " . mysqli_error($conn);
     
-                            if (file_exists($file_destination)) {
-                                unlink($file_destination);
-                            }
                         }
-                    } else {
-                        $error = "Database not connected."; 
-                        if (file_exists($file_destination)) {
-                            unlink($file_destination);
-                        }
-                    }
-                } else {
-                    $error = "Failed to move uploaded file.";
-                }
-            } else {
-                $error = "File size too large. Maximum size is 5MB.";
-            }
-        } else {
-            $error = "Invalid file type. Allowed types: " . implode(', ', $allowed);
-        }
-    } else {
-        $error = "Please select a valid image file.";
-    }
-    
   
-
-    if ($conn) $conn->close();
+                    }
+                
+     $conn->close();
 }
 ?>
 
@@ -308,134 +241,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
 
 
-
-
-
-<!---------------------------------------------------FORM TO ADD NEW ITEM IS SHOWN BELOW --------------------------------------------------------------------------------------->
-
-<div class="mt-3 ms-3">
-    <button type="button" class="btn btn-outline-primary"> <a href="category.php">Create Category</a></button>
+<div>
+    <button class="btn btn-primary mt-3 btn-sm "><a href="additem.php" class="text-white"> Back</a></button>
 </div>
 
-<div class="container-fluid py-4">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card mb-4 shadow">
-                    <div class="card-header bg-primary text-white">
-                        <center>
-                        <h4 class="mb-0 ">ADD NEW ITEM</h4>
-                        </center>
-                    </div>
-                    <div class="card-body">
-                    <?php if ($error): ?>
+<div>
+    <form action="" method="post">
+    <?php if ($error): ?>
                          <div class="alert alert-danger"><?php echo $error; ?></div>
                      <?php endif; ?>
                     <?php if (!empty($message)): ?>
                          <div class="alert alert-success"><?php echo $message; ?></div>
                     <?php endif; ?>
-                    
-                        <form id="itemForm" method='post' enctype="multipart/form-data">
-                          
-                            <div class="mb-3">
-                                <label for="item_category" class="form-label">Item Category:</label>
-                              
-                                <select class="form-select" id="item_category" name="item_category" required>
-                                  
-                                    <option value="">Choose a category</option>
-                                    <?php
-                                    $sql = "SELECT * FROM categories";
-                                    $result = mysqli_query($conn, $sql);
-                                    
-                                    if (mysqli_num_rows($result) > 0) {
-                                        while($row = mysqli_fetch_assoc($result)) {
-                                            echo '<option value="' . $row['id'] . '">' . $row['category_name'] . '</option>';
-                                        }
-                                    }
-                                 ?>
-                                </select>
-                               
-                            </div>
-                           
-                            <div class="mb-3">
-                                <label for="item_id" class="form-label">Item ID:</label>
-                                <input type="text" class="form-control" id="item_id" name="item_id" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="item_name" class="form-label">Item Name:</label>
-                                <input type="text" class="form-control" id="item_name" name="item_name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="item_price" class="form-label">Item Price:</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">₹</span>
-                                    <input type="number" class="form-control" id="item_price" name="item_price" step="0.01" required>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="item_quantity" class="form-label">Item Quantity:</label>
-                                <input type="number" class="form-control" id="item_quantity" name="item_quantity" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="item_exp" class="form-label">Expiry Date:</label>
-                                <input type="date" class="form-control" id="item_exp" name="item_exp" >
-                            </div>
-
-                            <div class="form-group">
-                               <label for="item_image">Product Image</label>
-                               <input type="file" class="form-control" id="item_image" name="item_image" accept="image/*" onchange="previewImage(event)">
-                          </div>
-    
-                           <div class="mt-3">
-                               <img id="preview" style="max-width: 200px; display: none;" class="img-thumbnail">
-                           </div>
-
-
-                           
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">Submit</button>
-                            </div>
-                        </form>
- 
-
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="mb-3">
+        <label for="item_id" class="form-label">Category ID:</label>
+        <input type="number" class="form-control" id="id" name="id" />
+    </div>
+    <div class="mb-3">
+        <label for="item_id" class="form-label">Category Name:</label>
+        <input type="text" class="form-control" id="category_name" name="category_name" />
+    </div>
+    <div class="d-grid">
+    <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+    </div>
+    </form>
 </div>
-
-
-
-     
-  <!--   Core JS Files   -->
-  <script src="../assets/js/core/popper.min.js"></script>
-  <script src="../assets/js/core/bootstrap.min.js"></script>
-  <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
-  <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
-
-function previewImage(event) {
-    var preview = document.getElementById('preview');
-    preview.style.display = 'block';
-    preview.src = URL.createObjectURL(event.target.files[0]);
-    
-    preview.onload = function() {
-        URL.revokeObjectURL(preview.src);
-    }
-}
-
-  </script>
-  <!-- Github buttons -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
-</body>
-
-</html>

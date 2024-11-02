@@ -225,7 +225,9 @@ include "../config/config.php";
 if($conn->connect_error) {
     die("connection failed: ".$conn->connect_error);
 } else {
-    $sql = "SELECT * FROM product";
+  $sql = "SELECT p.*, c.category_name 
+  FROM product p 
+  LEFT JOIN categories c ON p.item_id = c.id";
     $res =  $conn->query($sql);
     if($res->num_rows > 0) {
         echo "<table class='table align-items-center mb-0'>
@@ -266,7 +268,7 @@ if($conn->connect_error) {
                         <span class='text-secondary text-xs font-weight-bold'>".$row["item_exp"]."</span>
                     </td>
                     <td class='align-middle text-center'>
-                        <span class='text-secondary text-xs font-weight-bold'>".$row["item_category"]."</span>
+                        <span class='text-secondary text-xs font-weight-bold'>".$row["category_name"]."</span>
                     </td>
                    
                 </tr>";
