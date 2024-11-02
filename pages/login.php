@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link rel="icon" type="image/png" href="../assets/img/Invento.png">
   <title>Invento</title>
 
   <!-- Fonts and icons -->
@@ -95,6 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   </div>
                 </form>
               </div>
+              <!--
               <div class="card-footer text-center pt-0 px-lg-2 px-1">
                 <p class="mb-4 text-sm mx-auto">
                   Don't have an account?
@@ -102,6 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     class="text-info text-gradient font-weight-bold">Sign up</a>
                 </p>
               </div>
+                -->
             </div>
           </div>
           <div class="col-md-6">

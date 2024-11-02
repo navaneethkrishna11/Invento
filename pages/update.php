@@ -50,12 +50,9 @@ include "../config/config.php";
           </ol>
           <h6 class="font-weight-bolder mb-0">Products</h6>
         </nav>
+
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-          <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-            <div class="input-group">
-              <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-              <input type="text" class="form-control" placeholder="Type here...">
-            </div>
+          
           </div>
           <ul class="navbar-nav  justify-content-end">
             <li class="nav-item d-flex align-items-center">
@@ -70,52 +67,15 @@ include "../config/config.php";
                 </div>
               </a>
             </li>
-            <li class="nav-item px-3 d-flex align-items-center">
-              <a href="javascript:;" class="nav-link text-body p-0">
-                <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
-              </a>
-            </li>
+            
             <li class="nav-item dropdown pe-2 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa fa-bell cursor-pointer"></i>
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                <li class="mb-2">
-                  <a class="dropdown-item border-radius-md" href="javascript:;">
-                    <div class="d-flex py-1">
-                      <div class="my-auto">
-                        <img src="../assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
-                      </div>
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="text-sm font-weight-normal mb-1">
-                          <span class="font-weight-bold">New message</span> from Laur
-                        </h6>
-                        <p class="text-xs text-secondary mb-0 ">
-                          <i class="fa fa-clock me-1"></i>
-                          13 minutes ago
-                        </p>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-                <li class="mb-2">
-                  <a class="dropdown-item border-radius-md" href="javascript:;">
-                    <div class="d-flex py-1">
-                      <div class="my-auto">
-                        <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
-                      </div>
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="text-sm font-weight-normal mb-1">
-                          <span class="font-weight-bold">New album</span> by Travis Scott
-                        </h6>
-                        <p class="text-xs text-secondary mb-0 ">
-                          <i class="fa fa-clock me-1"></i>
-                          1 day
-                        </p>
-                      </div>
-                    </div>
-                  </a>
-                </li>
+               
+
+               
                 <li>
                   <a class="dropdown-item border-radius-md" href="javascript:;">
                     <div class="d-flex py-1">
@@ -136,7 +96,7 @@ include "../config/config.php";
                       </div>
                       <div class="d-flex flex-column justify-content-center">
                         <h6 class="text-sm font-weight-normal mb-1">
-                          Payment successfully completed
+                          Expired Products
                         </h6>
                         <p class="text-xs text-secondary mb-0 ">
                           <i class="fa fa-clock me-1"></i>
@@ -248,7 +208,7 @@ include "../config/config.php";
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-header pb-0">
-              <h6>Item table</h6>
+              
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
@@ -288,7 +248,7 @@ else{
                     <td>
                         <div class='d-flex px-2 py-1'>
                             <div>
-                                <img src='../assets/img/team-2.jpg' class='avatar avatar-sm me-3' alt='user1'>
+                                <img src='../uploads/products/".$row["item_image"]."' class='avatar avatar-sm me-3' alt='user1'>
                             </div>
                             <div class='d-flex flex-column justify-content-center'>
                                 <h6 class='mb-0 text-sm'>".$row["item_name"]."</h6>
@@ -369,27 +329,27 @@ if (isset($_GET['id'])) {
         <form method="POST" action="" class="border p-4 rounded">
             <div class="mb-3">
                 <label for="item_name" class="form-label">Item Name:</label>
-                <input type="text" class="form-control" id="item_name" name="item_name" value="<?php echo htmlspecialchars($item['item_name']); ?>" required>
+                <input type="text" class="form-control" id="item_name" name="item_name" value="" >
             </div>
 
             <div class="mb-3">
                 <label for="item_price" class="form-label">Price:</label>
-                <input type="number" class="form-control" id="item_price" name="item_price" value="<?php echo htmlspecialchars($item['item_price']); ?>" step="0.01" required>
+                <input type="number" class="form-control" id="item_price" name="item_price" value="<?php echo htmlspecialchars($item['item_price']); ?>" step="0.01" >
             </div>
 
             <div class="mb-3">
                 <label for="item_quantity" class="form-label">Quantity:</label>
-                <input type="number" class="form-control" id="item_quantity" name="item_quantity" value="<?php echo htmlspecialchars($item['item_quantity']); ?>" required>
+                <input type="number" class="form-control" id="item_quantity" name="item_quantity" value="<?php echo htmlspecialchars($item['item_quantity']); ?>" >
             </div>
 
             <div class="mb-3">
                 <label for="item_exp" class="form-label">Expiry Date:</label>
-                <input type="date" class="form-control" id="item_exp" name="item_exp" value="<?php echo htmlspecialchars($item['item_exp']); ?>" required>
+                <input type="date" class="form-control" id="item_exp" name="item_exp" value="<?php echo htmlspecialchars($item['item_exp']); ?>" >
             </div>
 
             <div class="mb-3">
                 <label for="item_category" class="form-label">Category:</label>
-                <input type="text" class="form-control" id="item_category" name="item_category" value="<?php echo htmlspecialchars($item['item_category']); ?>" required>
+                <input type="text" class="form-control" id="item_category" name="item_category" value="" >
             </div>
 
             <div class="text-center">

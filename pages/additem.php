@@ -2,6 +2,7 @@
 session_start();
 $error = "";
 include "../config/config.php";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $item_id = $_POST['item_id'];
     $item_name = $_POST['item_name'];
@@ -10,22 +11,95 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $item_exp = $_POST['item_exp'];
     $item_category = $_POST['item_category'];
 
-    if ($conn)
-    {
-        $sql = "INSERT INTO product (item_id,item_name,item_price,item_quantity,item_exp,item_category) VALUES ('$item_id', '$item_name','$item_price','$item_quantity','$item_exp','$item_category')";
+    error_log("Processing form submission");
+    error_log("Files array: " . print_r($_FILES, true));
+    
+    // Image handling
+    if (isset($_FILES['item_image']) && $_FILES['item_image']['error'] === UPLOAD_ERR_OK) {
+        $file = $_FILES['item_image'];
         
-        if (mysqli_query($conn, $sql)) {
-            $message = "Product added successfully!";
+        // File properties
+        $file_name = $file['name'];
+        $file_tmp = $file['tmp_name'];
+        $file_size = $file['size'];
+        
+        // Get file extension
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        
+        // Allowed file types
+        $allowed = array('jpg', 'jpeg', 'png', 'gif');
+        
+        if (in_array($file_ext, $allowed)) {
+            // Check file size (5MB maximum)
+            if ($file_size <= 5242880) { // 5MB in bytes
+                // Create unique file name
+                $file_name_new = $item_id . '_' . uniqid('', true) . '.' . $file_ext;
+                
+                // Upload directory - make sure this directory exists and is writable
+                $upload_dir = '../uploads/products/';
+                if (!file_exists($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                
+                $file_destination = $upload_dir . $file_name_new;
+                
+                // Move uploaded file
+                if (move_uploaded_file($file_tmp, $file_destination)) {
+                    if ($conn) {
+                        // SQL with image field
+                        $sql = "INSERT INTO product (
+                            item_id, 
+                            item_name, 
+                            item_price, 
+                            item_quantity, 
+                            item_exp, 
+                            item_category, 
+                            item_image
+                        ) VALUES (
+                            '$item_id', 
+                            '$item_name', 
+                            '$item_price', 
+                            '$item_quantity', 
+                            '$item_exp', 
+                            '$item_category', 
+                            '$file_name_new'
+                        )";
+                        
+                        if (mysqli_query($conn, $sql)) {
+                            $message = "Product added successfully!";
+                            
+                        } else {
+                            $error = "Error: " . mysqli_error($conn);
+    
+                            if (file_exists($file_destination)) {
+                                unlink($file_destination);
+                            }
+                        }
+                    } else {
+                        $error = "Database not connected."; 
+                        if (file_exists($file_destination)) {
+                            unlink($file_destination);
+                        }
+                    }
+                } else {
+                    $error = "Failed to move uploaded file.";
+                }
+            } else {
+                $error = "File size too large. Maximum size is 5MB.";
+            }
         } else {
-            $error = "Error: " . mysqli_error($conn);
+            $error = "Invalid file type. Allowed types: " . implode(', ', $allowed);
         }
     } else {
-        $error = "Database not connected.";
-    
+        $error = "Please select a valid image file.";
     }
-    $conn->close();
+    
+  
+
+    if ($conn) $conn->close();
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -36,6 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
   <link rel="icon" type="image/png" href="../assets/img/Invento.png">
+ 
   <title>
     Invento
   </title>
@@ -52,6 +127,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <!-- Nepcha Analytics (nepcha.com) -->
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+  <style>
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -62,6 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
  
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
+
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
@@ -71,12 +154,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </ol>
           <h6 class="font-weight-bolder mb-0">Products</h6>
         </nav>
+
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-          <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-            <div class="input-group">
-              <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-              <input type="text" class="form-control" placeholder="Type here...">
-            </div>
+          
           </div>
           <ul class="navbar-nav  justify-content-end">
             <li class="nav-item d-flex align-items-center">
@@ -91,52 +171,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
               </a>
             </li>
-            <li class="nav-item px-3 d-flex align-items-center">
-              <a href="javascript:;" class="nav-link text-body p-0">
-                <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
-              </a>
-            </li>
+            
             <li class="nav-item dropdown pe-2 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa fa-bell cursor-pointer"></i>
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
-                <li class="mb-2">
-                  <a class="dropdown-item border-radius-md" href="javascript:;">
-                    <div class="d-flex py-1">
-                      <div class="my-auto">
-                        <img src="../assets/img/team-2.jpg" class="avatar avatar-sm  me-3 ">
-                      </div>
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="text-sm font-weight-normal mb-1">
-                          <span class="font-weight-bold">New message</span> from Laur
-                        </h6>
-                        <p class="text-xs text-secondary mb-0 ">
-                          <i class="fa fa-clock me-1"></i>
-                          13 minutes ago
-                        </p>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-                <li class="mb-2">
-                  <a class="dropdown-item border-radius-md" href="javascript:;">
-                    <div class="d-flex py-1">
-                      <div class="my-auto">
-                        <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
-                      </div>
-                      <div class="d-flex flex-column justify-content-center">
-                        <h6 class="text-sm font-weight-normal mb-1">
-                          <span class="font-weight-bold">New album</span> by Travis Scott
-                        </h6>
-                        <p class="text-xs text-secondary mb-0 ">
-                          <i class="fa fa-clock me-1"></i>
-                          1 day
-                        </p>
-                      </div>
-                    </div>
-                  </a>
-                </li>
+               
+
+               
                 <li>
                   <a class="dropdown-item border-radius-md" href="javascript:;">
                     <div class="d-flex py-1">
@@ -157,7 +200,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                       </div>
                       <div class="d-flex flex-column justify-content-center">
                         <h6 class="text-sm font-weight-normal mb-1">
-                          Payment successfully completed
+                          Expired Products
                         </h6>
                         <p class="text-xs text-secondary mb-0 ">
                           <i class="fa fa-clock me-1"></i>
@@ -173,6 +216,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
       </div>
     </nav>
+    
     <!-- End Navbar -->
 
     <div class="container-fluid py-4">
@@ -286,7 +330,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php if (!empty($message)): ?>
                          <div class="alert alert-success"><?php echo $message; ?></div>
                     <?php endif; ?>
-                        <form id="itemForm" method='post'>
+                        <form id="itemForm" method='post' enctype="multipart/form-data">
                           
                             <div class="mb-3">
                                 <label for="item_category" class="form-label">Item Category:</label>
@@ -295,7 +339,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <option value="electronics">Electronics</option>
                                     <option value="clothing">Clothing</option>
                                     <option value="books">Books</option>
-                                    <option value="home">Home & Garden</option>
+                                    <option value="home">Kitchen Appliances</option>
+                                    <option value="sports">Sports</option>
+                                    <option value="beauty">Beauty kit</option>
+                                    <option value="grocery">Grocery</option>
+                                    <option value="bag">Bags</option>
+                                 
                                 </select>
                             </div>
                            
@@ -321,8 +370,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             
                             <div class="mb-3">
                                 <label for="item_exp" class="form-label">Item Date:</label>
-                                <input type="date" class="form-control" id="item_exp" name="item_exp" required>
+                                <input type="date" class="form-control" id="item_exp" name="item_exp" >
                             </div>
+
+                            <div class="form-group">
+                               <label for="item_image">Product Image</label>
+                               <input type="file" class="form-control" id="item_image" name="item_image" accept="image/*" onchange="previewImage(event)">
+                          </div>
+    
+                           <div class="mt-3">
+                               <img id="preview" style="max-width: 200px; display: none;" class="img-thumbnail">
+                           </div>
+
+
                            
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary btn-lg">Submit</button>
@@ -350,6 +410,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
       Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
+
+function previewImage(event) {
+    var preview = document.getElementById('preview');
+    preview.style.display = 'block';
+    preview.src = URL.createObjectURL(event.target.files[0]);
+    
+    preview.onload = function() {
+        URL.revokeObjectURL(preview.src);
+    }
+}
+
   </script>
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
