@@ -272,7 +272,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                  <a href="delete.php" class="text-sm mb-0 text-capitalize font-weight-bold">Delete Item</a>                  </div>
+                  <a href="delete.php" class="text-sm mb-0 text-capitalize font-weight-bold">Delete Item</a> </div>
                 </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
@@ -313,6 +313,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!---------------------------------------------------FORM TO ADD NEW ITEM IS SHOWN BELOW --------------------------------------------------------------------------------------->
 
+<div class="mt-3 ms-3">
+    <button type="button" class="btn btn-outline-primary"> <a href="category.php">Create Category</a></button>
+</div>
 
 <div class="container-fluid py-4">
         <div class="row justify-content-center">
@@ -330,22 +333,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php if (!empty($message)): ?>
                          <div class="alert alert-success"><?php echo $message; ?></div>
                     <?php endif; ?>
+                    
                         <form id="itemForm" method='post' enctype="multipart/form-data">
                           
                             <div class="mb-3">
                                 <label for="item_category" class="form-label">Item Category:</label>
+                              
                                 <select class="form-select" id="item_category" name="item_category" required>
+                                  
                                     <option value="">Choose a category</option>
-                                    <option value="electronics">Electronics</option>
-                                    <option value="clothing">Clothing</option>
-                                    <option value="books">Books</option>
-                                    <option value="home">Kitchen Appliances</option>
-                                    <option value="sports">Sports</option>
-                                    <option value="beauty">Beauty kit</option>
-                                    <option value="grocery">Grocery</option>
-                                    <option value="bag">Bags</option>
-                                 
+                                    <?php
+                                    $sql = "SELECT * FROM categories";
+                                    $result = mysqli_query($conn, $sql);
+                                    
+                                    if (mysqli_num_rows($result) > 0) {
+                                        while($row = mysqli_fetch_assoc($result)) {
+                                            echo '<option value="' . $row['id'] . '">' . $row['category_name'] . '</option>';
+                                        }
+                                    }
+                                 ?>
                                 </select>
+                               
                             </div>
                            
                             <div class="mb-3">
@@ -388,6 +396,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <button type="submit" class="btn btn-primary btn-lg">Submit</button>
                             </div>
                         </form>
+ 
+
                     </div>
                 </div>
             </div>

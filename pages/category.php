@@ -3,7 +3,36 @@ session_start();
 $error = "";
 include "../config/config.php";
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $id = $_POST['id'];
+    $category_name = $_POST['category_name'];
+   
+                    if ($conn) {
+                       
+                        $sql = "INSERT INTO categories (
+                            
+                            category_name
+                            
+                        ) VALUES (
+                             
+                            '$category_name'
+                           
+                        )";
+                        
+                        if (mysqli_query($conn, $sql)) {
+                            $message = "Product added successfully!";
+                            
+                        } else {
+                            $error = "Error: " . mysqli_error($conn);
+    
+                        }
+  
+                    }
+                
+     $conn->close();
+}
 ?>
+
 
 
 <!DOCTYPE html>
@@ -13,7 +42,8 @@ include "../config/config.php";
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/invento.png">
+  <link rel="icon" type="image/png" href="../assets/img/Invento.png">
+ 
   <title>
     Invento
   </title>
@@ -30,16 +60,24 @@ include "../config/config.php";
   <!-- Nepcha Analytics (nepcha.com) -->
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+  <style>
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
 
   <?php
- include 'sidebar.html'
+ include 'sidebar.html';
   ?>
  
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
+
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
@@ -111,6 +149,7 @@ include "../config/config.php";
         </div>
       </div>
     </nav>
+    
     <!-- End Navbar -->
 
     <div class="container-fluid py-4">
@@ -123,7 +162,7 @@ include "../config/config.php";
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    <a href="" class="text-sm mb-0 text-capitalize font-weight-bold">View Table</a>
+                    <a href="/dashboard/Invento/pages/tables.php" class="text-sm mb-0 text-capitalize font-weight-bold">View Table</a>
                   </div>
                 </div>
                 <div class="col-4 text-end">
@@ -158,16 +197,15 @@ include "../config/config.php";
           </div>
         </div>
 
+
+
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-body p-3">
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    
-                    <a href="delete.php" class="text-sm mb-0 text-capitalize font-weight-bold">Delete Item</a>
-                    
-                  </div>
+                  <a href="delete.php" class="text-sm mb-0 text-capitalize font-weight-bold">Delete Item</a> </div>
                 </div>
                 <div class="col-4 text-end">
                   <div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
@@ -187,8 +225,6 @@ include "../config/config.php";
               <div class="row">
                 <div class="col-8">
                   <div class="numbers">
-                    
-                    
                   <a href="update.php?id=.$row['item_id']" class="text-sm mb-0 text-capitalize font-weight-bold">Update Item</a> 
                    
                   </div>
@@ -205,113 +241,25 @@ include "../config/config.php";
       </div>
 
 
+<div>
+    <button class="btn btn-primary mt-3 btn-sm "><a href="additem.php" class="text-white"> Back</a></button>
+</div>
 
-
-
-
-
-
-    <div class="container-fluid py-4">
-      <div class="row">
-        <div class="col-12">
-          <div class="card mb-4">
-            <div class="card-header pb-0">
-              <h6>Item table</h6>
-            </div>
-            <div class="card-body px-0 pt-0 pb-2">
-              <div class="table-responsive p-0">
-              <?php
-include "../config/config.php";
-if($conn->connect_error) {
-    die("connection failed: ".$conn->connect_error);
-} else {
-  $sql = "SELECT p.*, c.category_name 
-  FROM product p 
-  LEFT JOIN categories c ON p.item_id = c.id";
-    $res =  $conn->query($sql);
-    if($res->num_rows > 0) {
-        echo "<table class='table align-items-center mb-0'>
-                <tr>
-                    <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Id</th>
-                    <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Item</th>
-                    <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2'>Price</th>
-                    <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Status</th>
-                    <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Expiry date</th>
-                    <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Category</th>
-                    <th class='text-secondary opacity-7'></th>
-                </tr>";
-
-        while($row = $res->fetch_assoc()) {
-            echo "<tr>
-                    <td>
-                        <div class='d-flex px-2 py-1'>
-                            <div class='d-flex flex-column justify-content-center'>
-                                <h6 class='mb-0 text-sm'>".$row["item_id"]."</h6>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class='d-flex px-2 py-1'>
-                            <div>
-                                <img src='../uploads/products/".$row["item_image"]." 'class='avatar avatar-sm me-3' alt='user1'>
-                            </div>
-                            <div class='d-flex flex-column justify-content-center'>
-                                <h6 class='mb-0 text-sm'>".$row["item_name"]."</h6>
-                            </div>
-                        </div>
-                    </td>
-                    <td><p class='text-xs font-weight-bold mb-0'>".$row["item_price"]."</p></td>
-                    <td class='align-middle text-center text-sm'>
-                        <span class='badge badge-sm bg-gradient-success'>".$row["item_quantity"]."</span>
-                    </td>
-                    <td class='align-middle text-center'>
-                        <span class='text-secondary text-xs font-weight-bold'>".$row["item_exp"]."</span>
-                    </td>
-                    <td class='align-middle text-center'>
-                        <span class='text-secondary text-xs font-weight-bold'>".$row["item_category"]."</span>
-                    </td>
-                   
-                </tr>";
-        }
-        echo "</table>";
-    } else {
-        echo "No records found.";
-    }
-    $conn->close();
-}
-?>
-
-                     
-            
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-
-
-
-     
-  <!--   Core JS Files   -->
-  <script src="../assets/js/core/popper.min.js"></script>
-  <script src="../assets/js/core/bootstrap.min.js"></script>
-  <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
-  <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
-  </script>
-  <!-- Github buttons -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
-</body>
-
-</html>
+<div>
+    <form action="" method="post">
+    <?php if ($error): ?>
+                         <div class="alert alert-danger"><?php echo $error; ?></div>
+                     <?php endif; ?>
+                    <?php if (!empty($message)): ?>
+                         <div class="alert alert-success"><?php echo $message; ?></div>
+                    <?php endif; ?>
+   
+    <div class="mb-3">
+        <label for="item_id" class="form-label">Category Name:</label>
+        <input type="text" class="form-control" id="category_name" name="category_name" />
+    </div>
+    <div class="d-grid">
+    <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+    </div>
+    </form>
+</div>
