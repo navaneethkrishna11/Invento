@@ -1,5 +1,11 @@
 <?php
 session_start();
+if(isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
+    unset($_SESSION['message']);
+} else {
+    $message = "";
+}
 $error = "";
 include "../config/config.php";
 
@@ -66,10 +72,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         )";
                         
                         if (mysqli_query($conn, $sql)) {
-                            $message = "Product added successfully!";
-                            
-                            header("Location: " . $_SERVER['PHP_SELF']);//if this is removed then added message will display
-                            
+                            $_SESSION['message'] = "Product added successfully!";
+                            header("Location: " . $_SERVER['PHP_SELF']);
+                            exit();
                         } else {
                             $error = "Error: " . mysqli_error($conn);
     
@@ -329,11 +334,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </center>
                     </div>
                     <div class="card-body">
-                    <?php if ($error): ?>
-                         <div class="alert alert-danger"><?php echo $error; ?></div>
-                     <?php endif; ?>
                     <?php if (!empty($message)): ?>
-                         <div class="alert alert-success"><?php echo $message; ?></div>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <?php echo $message; ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     <?php endif; ?>
                     
                         <form id="itemForm" method='post' enctype="multipart/form-data">
