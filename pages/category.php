@@ -4,7 +4,6 @@ $error = "";
 include "../config/config.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id = $_POST['id'];
     $category_name = $_POST['category_name'];
    
                     if ($conn) {
