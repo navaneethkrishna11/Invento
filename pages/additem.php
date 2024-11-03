@@ -68,6 +68,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if (mysqli_query($conn, $sql)) {
                             $message = "Product added successfully!";
                             
+                            header("Location: " . $_SERVER['PHP_SELF']);//if this is removed then added message will display
+                            
                         } else {
                             $error = "Error: " . mysqli_error($conn);
     
