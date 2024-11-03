@@ -268,7 +268,7 @@ if($conn->connect_error) {
                         <span class='text-secondary text-xs font-weight-bold'>".$row["item_exp"]."</span>
                     </td>
                     <td class='align-middle text-center'>
-                        <span class='text-secondary text-xs font-weight-bold'>".$row["category_name"]."</span>
+                        <span class='text-secondary text-xs font-weight-bold'>".$row["item_category"]."</span>
                     </td>
                    
                 </tr>";

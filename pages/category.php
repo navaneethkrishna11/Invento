@@ -10,11 +10,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     if ($conn) {
                        
                         $sql = "INSERT INTO categories (
-                            id, 
+                            
                             category_name
                             
                         ) VALUES (
-                            '$id', 
+                             
                             '$category_name'
                            
                         )";
@@ -253,10 +253,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php if (!empty($message)): ?>
                          <div class="alert alert-success"><?php echo $message; ?></div>
                     <?php endif; ?>
-    <div class="mb-3">
-        <label for="item_id" class="form-label">Category ID:</label>
-        <input type="number" class="form-control" id="id" name="id" />
-    </div>
+   
     <div class="mb-3">
         <label for="item_id" class="form-label">Category Name:</label>
         <input type="text" class="form-control" id="category_name" name="category_name" />
