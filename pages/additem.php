@@ -348,7 +348,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     
                                     if (mysqli_num_rows($result) > 0) {
                                         while($row = mysqli_fetch_assoc($result)) {
-                                            echo '<option value="' . $row['id'] . '">' . $row['category_name'] . '</option>';
+                                            echo '<option value="' . $row['category_name'] . '">' . $row['category_name'] . '</option>';
                                         }
                                     }
                                  ?>

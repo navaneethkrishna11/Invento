@@ -51,7 +51,7 @@ include "../config/config.php";
           <h6 class="font-weight-bolder mb-0">Products</h6>
         </nav>
 
-        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+        <!-- <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           
           </div>
           <ul class="navbar-nav  justify-content-end">
@@ -72,11 +72,11 @@ include "../config/config.php";
               <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa fa-bell cursor-pointer"></i>
               </a>
-              <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+              <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton"> -->
                
 
                
-                <li>
+                <!-- <li>
                   <a class="dropdown-item border-radius-md" href="javascript:;">
                     <div class="d-flex py-1">
                       <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
@@ -105,7 +105,7 @@ include "../config/config.php";
                       </div>
                     </div>
                   </a>
-                </li>
+                </li> -->
               </ul>
             </li>
           </ul>
@@ -212,160 +212,174 @@ include "../config/config.php";
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
-<?php
-include "../config/config.php";
+                <?php
+                  include "../config/config.php";
 
-if ($conn->connect_error) {
-    die("Connection failed: " .$conn->connect_error);
-}
-else{
+                  if ($conn->connect_error) {
+                      die("Connection failed: " .$conn->connect_error);
+                  }
+                  else{
 
-  $sql = "SELECT i.*, c.category_name 
-  FROM product i 
-  LEFT JOIN categories c ON i.item_id = c.id";
-   
+                    // $sql = "SELECT i.*, c.category_name 
+                    // FROM product i 
+                    // LEFT JOIN categories c ON i.item_id = c.id";
+                    $sql = "SELECT * FROM product";
+                    
 
-    $res =  $conn->query($sql);
-    if($res->num_rows > 0) {
-        echo "<table class='table align-items-center mb-0'>
-                <tr>
-                    <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Id</th>
-                    <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Item</th>
-                    <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2'>Price</th>
-                    <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Status</th>
-                    <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Expiry date</th>
-                    <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Category</th>
-                    <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Update</th>
+                      $res =  $conn->query($sql);
+                      if($res->num_rows > 0) {
+                          echo "<table class='table align-items-center mb-0'>
+                                  <tr>
+                                      <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Id</th>
+                                      <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Item</th>
+                                      <th class='text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2'>Price</th>
+                                      <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Status</th>
+                                      <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Expiry date</th>
+                                      <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Category</th>
+                                      <th class='text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7'>Update</th>
 
-                    <th class='text-secondary opacity-7'></th>
-                </tr>";
+                                      <th class='text-secondary opacity-7'></th>
+                                  </tr>";
 
-        while($row = $res->fetch_assoc()) {
-            echo "<tr>
-                    <td>
-                        <div class='d-flex px-2 py-1'>
-                            <div class='d-flex flex-column justify-content-center'>
-                                <h6 class='mb-0 text-sm'>".$row["item_id"]."</h6>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class='d-flex px-2 py-1'>
-                            <div>
-                                <img src='../uploads/products/".$row["item_image"]."' class='avatar avatar-sm me-3' alt='user1'>
-                            </div>
-                            <div class='d-flex flex-column justify-content-center'>
-                                <h6 class='mb-0 text-sm'>".$row["item_name"]."</h6>
-                            </div>
-                        </div>
-                    </td>
-                      <td><p class='text-xs font-weight-bold mb-0'>".$row["item_price"]."</p></td>
-                      <td class='align-middle text-center text-sm'>
-                          <span class='badge badge-sm bg-gradient-success'>".$row["item_quantity"]."</span>
-                      </td>
-                      <td class='align-middle text-center'>
-                          <span class='text-secondary text-xs font-weight-bold'>".$row["item_exp"]."</span>
-                      </td>
-                      {?php
-                      <td class='align-middle text-center'>
-                          <span class='text-secondary text-xs font-weight-bold'>".$row["category_name"]."</span>
-                      </td>
-                      ?>
-                      <td class='align-middle text-center'>
-                          <a href='update.php?id=".$row['item_id']."' class='text-sm mb-0 text-capitalize font-weight-bold'>Edit</a>
-                      </td>
-                  </tr>";
-          }
-        echo "</table>";
-    } else {
-        echo "No records found.";
-    }
-    
+                          while($row = $res->fetch_assoc()) {
+                              echo "<tr>
+                                      <td>
+                                          <div class='d-flex px-2 py-1'>
+                                              <div class='d-flex flex-column justify-content-center'>
+                                                  <h6 class='mb-0 text-sm'>".$row["item_id"]."</h6>
+                                              </div>
+                                          </div>
+                                      </td>
+                                      <td>
+                                          <div class='d-flex px-2 py-1'>
+                                              <div>
+                                                  <img src='../uploads/products/".$row["item_image"]."' class='avatar avatar-sm me-3' alt='user1'>
+                                              </div>
+                                              <div class='d-flex flex-column justify-content-center'>
+                                                  <h6 class='mb-0 text-sm'>".$row["item_name"]."</h6>
+                                              </div>
+                                          </div>
+                                      </td>
+                                        <td><p class='text-xs font-weight-bold mb-0'>".$row["item_price"]."</p></td>
+                                        <td class='align-middle text-center text-sm'>
+                                            <span class='badge badge-sm bg-gradient-success'>".$row["item_quantity"]."</span>
+                                        </td>
+                                        <td class='align-middle text-center'>
+                                            <span class='text-secondary text-xs font-weight-bold'>".$row["item_exp"]."</span>
+                                        </td>
+                                        <td class='align-middle text-center'>
+                                            <span class='text-secondary text-xs font-weight-bold'>".$row["item_category"]."</span>
+                                        </td>
+                                        <td class='align-middle text-center'>
+                                            <a href='update.php?id=".$row['item_id']."' class='text-sm mb-0 text-capitalize font-weight-bold'>Edit</a>
+                                        </td>
+                                    </tr>";
+                            }
+                          echo "</table>";
+                      } else {
+                          echo "No records found.";
+                      }
+                      
 
-}
+                  }
 
 
-// Check if ID is provided in URL
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    
-    // Fetch the existing item details
-    $sql = "SELECT * FROM product WHERE item_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $item = $result->fetch_assoc();
-    $stmt->close();
+                  // Check if ID is provided in URL
+                  if (isset($_GET['id'])) {
+                      $id = $_GET['id'];
+                      
+                      // Fetch the existing item details
+                      $sql = "SELECT * FROM product WHERE item_id = ?";
+                      $stmt = $conn->prepare($sql);
+                      $stmt->bind_param("i", $id);
+                      $stmt->execute();
+                      $result = $stmt->get_result();
+                      $item = $result->fetch_assoc();
+                      $stmt->close();
 
-    // Update the item when the form is submitted
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $item_name = $_POST['item_name'];
-        $item_price = $_POST['item_price'];
-        $item_quantity = $_POST['item_quantity'];
-        $item_exp = $_POST['item_exp'];
-        $item_category = $_POST['item_category'];
-        
-        // Update the item in the database
-        $update_sql = "UPDATE product SET item_name = ?, item_price = ?, item_quantity = ?, item_exp = ?, item_category = ? WHERE item_id = ?";
-        $update_stmt = $conn->prepare($update_sql);
-        $update_stmt->bind_param("sdissi", $item_name, $item_price, $item_quantity, $item_exp, $item_category, $id);
-        $update_stmt->execute();
-        $update_stmt->close();
+                      // Update the item when the form is submitted
+                      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                          $item_name = $_POST['item_name'];
+                          $item_price = $_POST['item_price'];
+                          $item_quantity = $_POST['item_quantity'];
+                          $item_exp = $_POST['item_exp'];
+                          $item_category = $_POST['item_category'];
+                          
+                          // Update the item in the database
+                          $update_sql = "UPDATE product SET item_name = ?, item_price = ?, item_quantity = ?, item_exp = ?, item_category = ? WHERE item_id = ?";
+                          $update_stmt = $conn->prepare($update_sql);
+                          $update_stmt->bind_param("sdissi", $item_name, $item_price, $item_quantity, $item_exp, $item_category, $id);
+                          $update_stmt->execute();
+                          $update_stmt->close();
 
-        
-        header("Location:tables.php"); // Redirect to the main table page
-        exit();
-    }
-} else {
-    echo "No item ID provided.";
-    exit();
-}
-?>
+                          
+                          header("Location:tables.php"); // Redirect to the main table page
+                          exit();
+                      }
+                  } else {
+                      echo "No item ID provided.";
+                      exit();
+                  }
+                ?>
 
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Update Item</title>
 </head>
-<body>
-    <div class="container">
-        <h2 class="text-center">Update Item</h2>
-        <form method="POST" action="" class="border p-4 rounded">
-            <div class="mb-3">
-                <label for="item_name" class="form-label">Item Name:</label>
-                <input type="text" class="form-control" id="item_name" name="item_name" value="" >
-            </div>
+<body> -->
+                  <div class="container">
+                      <h2 class="text-center">Update Item</h2>
+                      <form method="POST" action="" class="border p-4 rounded">
+                          <div class="mb-3">
+                              <label for="item_name" class="form-label">Item Name:</label>
+                              <input type="text" class="form-control" id="item_name" name="item_name" value="" >
+                          </div>
 
-            <div class="mb-3">
-                <label for="item_price" class="form-label">Price:</label>
-                <input type="number" class="form-control" id="item_price" name="item_price" value="<?php echo htmlspecialchars($item['item_price']); ?>" step="0.01" >
-            </div>
+                          <div class="mb-3">
+                              <label for="item_price" class="form-label">Price:</label>
+                              <input type="number" class="form-control" id="item_price" name="item_price" value="<?php echo htmlspecialchars($item['item_price']); ?>" step="0.01" >
+                          </div>
 
-            <div class="mb-3">
-                <label for="item_quantity" class="form-label">Quantity:</label>
-                <input type="number" class="form-control" id="item_quantity" name="item_quantity" value="<?php echo htmlspecialchars($item['item_quantity']); ?>" >
-            </div>
+                          <div class="mb-3">
+                              <label for="item_quantity" class="form-label">Quantity:</label>
+                              <input type="number" class="form-control" id="item_quantity" name="item_quantity" value="<?php echo htmlspecialchars($item['item_quantity']); ?>" >
+                          </div>
 
-            <div class="mb-3">
-                <label for="item_exp" class="form-label">Expiry Date:</label>
-                <input type="date" class="form-control" id="item_exp" name="item_exp" value="<?php echo htmlspecialchars($item['item_exp']); ?>" >
-            </div>
+                          <div class="mb-3">
+                              <label for="item_exp" class="form-label">Expiry Date:</label>
+                              <input type="date" class="form-control" id="item_exp" name="item_exp" value="<?php echo htmlspecialchars($item['item_exp']); ?>" >
+                          </div>
 
-            <div class="mb-3">
-                <label for="item_category" class="form-label">Category:</label>
-                <input type="text" class="form-control" id="item_category" name="item_category" value="" >
-            </div>
+                          <div class="mb-3">
+                                <label for="item_category" class="form-label">Item Category:</label>
+                              
+                                <select class="form-select" id="item_category" name="item_category" required>
+                                  
+                                    <option value="">Choose a category</option>
+                                    <?php
+                                    $sql = "SELECT * FROM categories";
+                                    $result = mysqli_query($conn, $sql);
+                                    
+                                    if (mysqli_num_rows($result) > 0) {
+                                        while($row = mysqli_fetch_assoc($result)) {
+                                            echo '<option value="' . $row['category_name'] . '">' . $row['category_name'] . '</option>';
+                                        }
+                                    }
+                                 ?>
+                                </select>
+                               
+                            </div>
 
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary">Update</button>
-            </div>
-        </form>
-    </div>
-</body>
+                          <div class="text-center">
+                              <button type="submit" class="btn btn-primary">Update</button>
+                          </div>
+                      </form>
+                  </div>
+<!-- </body>
 
-</html>
+</html> -->
 
 
 <!-- Modal for Delete Confirmation -->
